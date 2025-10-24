@@ -3,6 +3,7 @@ import { Form, Input, Button, Card, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { wardStore } from "../store/WardStore";
 import { provinceStore } from "../store/ProvinceStore";
+import {removeVietnameseTones} from "../utils/util.ts";
 
 export default function WardFormPage() {
     const [form] = Form.useForm();
@@ -10,7 +11,7 @@ export default function WardFormPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        provinceStore.fetchAll(0, 100); // load danh sách province để chọn
+        provinceStore.fetchAll(0, 50);
         if (id) {
             wardStore.getById(Number(id)).then(() => form.setFieldsValue(wardStore.selected));
         }
@@ -34,7 +35,12 @@ export default function WardFormPage() {
                 </Form.Item>
                 <Form.Item name="provinceCode" label="Province" rules={[{ required: true }]}>
                     <Select
+                        showSearch={true}
                         placeholder="Select province"
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            removeVietnameseTones((option?.label ?? "").toLowerCase()).includes(removeVietnameseTones(input.toLowerCase()))
+                        }
                         options={provinceStore.list.map((p) => ({
                             label: `${p.name} (${p.code})`,
                             value: p.code,

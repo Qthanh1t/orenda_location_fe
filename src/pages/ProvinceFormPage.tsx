@@ -1,4 +1,3 @@
-// src/pages/provinces/ProvinceFormPage.tsx
 import { useEffect } from "react";
 import { Form, Input, Button, Card } from "antd";
 import { useNavigate, useParams } from "react-router-dom";

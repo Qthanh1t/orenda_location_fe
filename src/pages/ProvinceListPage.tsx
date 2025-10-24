@@ -1,35 +1,49 @@
-// src/pages/provinces/ProvinceListPage.tsx
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { Button, Table, Space } from "antd";
 import { provinceStore } from "../store/ProvinceStore";
 import { Link, useNavigate } from "react-router-dom";
+import Search from "antd/es/input/Search";
 
 const ProvinceListPage = observer(() => {
     const navigate = useNavigate();
-    const { list, loading, total, page, size, fetchAll, remove } = provinceStore;
+    const { list, loading, total, page, size} = provinceStore;
 
     useEffect(() => {
-        fetchAll();
+        provinceStore.fetchAll();
+        provinceStore.setSize(10);
+        provinceStore.setText("");
     }, []);
+
+    const handleSearch = (value: string) => {
+        provinceStore.setText(value);
+    };
 
     return (
         <div className="bg-white p-4 rounded-2xl shadow">
             <div className="flex justify-between mb-4">
                 <h2 className="text-xl font-semibold">Provinces</h2>
-                <Button type="primary" onClick={() => navigate("/provinces/new")}>
-                    + Add Province
-                </Button>
+                <Space>
+                    <Search
+                        placeholder="Search province..."
+                        onSearch={handleSearch}
+                        style={{ width: 240 }}
+                        allowClear
+                    />
+                    <Button type="primary" onClick={() => navigate("/provinces/new")}>
+                        + Add Province
+                    </Button>
+                </Space>
             </div>
             <Table
                 rowKey="id"
                 dataSource={list}
                 loading={loading}
                 pagination={{
-                    current: page + 1, // antd dùng 1-based
+                    current: page + 1,
                     pageSize: size,
                     total,
-                    onChange: (p, s) => fetchAll(p - 1, s),
+                    onChange: (p, s) => provinceStore.fetchAll(p - 1, s),
                     showSizeChanger: true,
                 }}
                 columns={[
@@ -41,7 +55,7 @@ const ProvinceListPage = observer(() => {
                         render: (_, record) => (
                             <Space>
                                 <Link to={`/provinces/${record.id}/edit`}>Edit</Link>
-                                <Button type="link" danger onClick={() => remove(record.id!)}>
+                                <Button type="link" danger onClick={() => provinceStore.remove(record.id!)}>
                                     Delete
                                 </Button>
                             </Space>

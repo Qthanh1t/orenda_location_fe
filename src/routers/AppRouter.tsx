@@ -1,4 +1,3 @@
-// src/routes/AppRouter.tsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import ProvinceListPage from "../pages/ProvinceListPage";
